@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Planet {
+  id             Int              @id @default(autoincrement())
+  index          Int
+  name           String           @unique
+  sector         String 
+  biome          Biome            @relation(fields: [biomeId], references: [id])
+  biomeId        Int
+  hazards        Hazard[]
+  hash           Int
+  positionX      Int
+  positionY      Int
+  waypoints      Int[]
+  maxHealth      Int
+  health         Int
+  disabled       Boolean
+  initialOwner   String
+  currentOwner   String
+  regenPerSecond Float
+  event          PlanetEvent?     @relation(fields: [eventId], references: [id])
+  eventId        Int?
+  statistics     PlanetStatistics @relation(fields: [id], references: [id])
+  attacking      Int[]
+} 
+
+model Biome {
+  id          Int       @default(autoincrement()) @id
+  name        String
+  description String
+  planets     Planet[]
+}
+
+model Hazard {
+  id          Int       @default(autoincrement()) @id
+  name        String
+  description String
+  planetId    Int
+  planet      Planet    @relation(fields: [planetId], references: [id])
+}
+
+model PlanetEvent {
+  id                Int       @default(autoincrement()) @id
+  eventType         Int
+  faction           String
+  health            Int
+  maxHealth         Int
+  startTime         DateTime
+  endTime           DateTime
+  campaignId        Int
+  jointOperationIds Int[]
+  planets           Planet[]
+}
+
+model PlanetStatistics {
+  id                 Int       @id
+  missionsWon        Int
+  missionsLost       Int
+  missionTime        Int
+  terminidKills      Int
+  automatonKills     Int
+  illuminateKills    Int
+  bulletsFired       Int
+  bulletsHit         Int
+  timePlayed         Int
+  deaths             Int
+  revives            Int
+  friendlies         Int
+  missionSuccessRate Int
+  accuracy           Int
+  playerCount        Int
+  planet             Planet?
+}
