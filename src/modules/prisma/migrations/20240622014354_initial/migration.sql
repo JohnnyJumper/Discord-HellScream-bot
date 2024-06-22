@@ -1,23 +1,23 @@
 -- CreateTable
 CREATE TABLE "Planet" (
     "id" SERIAL NOT NULL,
-    "index" INTEGER NOT NULL,
+    "index" BIGINT NOT NULL,
     "name" TEXT NOT NULL,
     "sector" TEXT NOT NULL,
     "biomeId" INTEGER NOT NULL,
-    "hash" INTEGER NOT NULL,
-    "positionX" INTEGER NOT NULL,
-    "positionY" INTEGER NOT NULL,
-    "waypoints" INTEGER[],
-    "maxHealth" INTEGER NOT NULL,
-    "health" INTEGER NOT NULL,
+    "hash" BIGINT NOT NULL,
+    "positionX" BIGINT NOT NULL,
+    "positionY" BIGINT NOT NULL,
+    "waypoints" BIGINT[],
+    "maxHealth" BIGINT NOT NULL,
+    "health" BIGINT NOT NULL,
     "disabled" BOOLEAN NOT NULL,
     "initialOwner" TEXT NOT NULL,
     "currentOwner" TEXT NOT NULL,
     "regenPerSecond" DOUBLE PRECISION NOT NULL,
     "eventId" INTEGER,
     "statisticsId" INTEGER NOT NULL,
-    "attacking" INTEGER[],
+    "attacking" BIGINT[],
 
     CONSTRAINT "Planet_pkey" PRIMARY KEY ("id")
 );
@@ -44,14 +44,14 @@ CREATE TABLE "Hazard" (
 -- CreateTable
 CREATE TABLE "PlanetEvent" (
     "id" SERIAL NOT NULL,
-    "eventType" INTEGER NOT NULL,
+    "eventType" BIGINT NOT NULL,
     "faction" TEXT NOT NULL,
-    "health" INTEGER NOT NULL,
-    "maxHealth" INTEGER NOT NULL,
+    "health" BIGINT NOT NULL,
+    "maxHealth" BIGINT NOT NULL,
     "startTime" TIMESTAMP(3) NOT NULL,
     "endTime" TIMESTAMP(3) NOT NULL,
-    "campaignId" INTEGER NOT NULL,
-    "jointOperationIds" INTEGER[],
+    "campaignId" BIGINT NOT NULL,
+    "jointOperationIds" BIGINT[],
 
     CONSTRAINT "PlanetEvent_pkey" PRIMARY KEY ("id")
 );
@@ -59,22 +59,21 @@ CREATE TABLE "PlanetEvent" (
 -- CreateTable
 CREATE TABLE "PlanetStatistics" (
     "id" SERIAL NOT NULL,
-    "missionsWon" INTEGER NOT NULL,
-    "missionsLost" INTEGER NOT NULL,
-    "missionTime" INTEGER NOT NULL,
-    "terminidKills" INTEGER NOT NULL,
-    "automatonKills" INTEGER NOT NULL,
-    "illuminateKills" INTEGER NOT NULL,
-    "bulletsFired" INTEGER NOT NULL,
-    "bulletsHit" INTEGER NOT NULL,
-    "timePlayed" INTEGER NOT NULL,
-    "deaths" INTEGER NOT NULL,
-    "revives" INTEGER NOT NULL,
-    "friendlies" INTEGER NOT NULL,
-    "missionSuccessRate" INTEGER NOT NULL,
-    "accuracy" INTEGER NOT NULL,
-    "playerCount" INTEGER NOT NULL,
-    "planetId" INTEGER NOT NULL,
+    "missionsWon" BIGINT NOT NULL,
+    "missionsLost" BIGINT NOT NULL,
+    "missionTime" BIGINT NOT NULL,
+    "terminidKills" BIGINT NOT NULL,
+    "automatonKills" BIGINT NOT NULL,
+    "illuminateKills" BIGINT NOT NULL,
+    "bulletsFired" BIGINT NOT NULL,
+    "bulletsHit" BIGINT NOT NULL,
+    "timePlayed" BIGINT NOT NULL,
+    "deaths" BIGINT NOT NULL,
+    "revives" BIGINT NOT NULL,
+    "friendlies" BIGINT NOT NULL,
+    "missionSuccessRate" BIGINT NOT NULL,
+    "accuracy" BIGINT NOT NULL,
+    "playerCount" BIGINT NOT NULL,
 
     CONSTRAINT "PlanetStatistics_pkey" PRIMARY KEY ("id")
 );
@@ -85,9 +84,6 @@ CREATE UNIQUE INDEX "Planet_name_key" ON "Planet"("name");
 -- CreateIndex
 CREATE UNIQUE INDEX "Planet_statisticsId_key" ON "Planet"("statisticsId");
 
--- CreateIndex
-CREATE UNIQUE INDEX "PlanetStatistics_planetId_key" ON "PlanetStatistics"("planetId");
-
 -- AddForeignKey
 ALTER TABLE "Planet" ADD CONSTRAINT "Planet_biomeId_fkey" FOREIGN KEY ("biomeId") REFERENCES "Biome"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -95,7 +91,7 @@ ALTER TABLE "Planet" ADD CONSTRAINT "Planet_biomeId_fkey" FOREIGN KEY ("biomeId"
 ALTER TABLE "Planet" ADD CONSTRAINT "Planet_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES "PlanetEvent"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Hazard" ADD CONSTRAINT "Hazard_planetId_fkey" FOREIGN KEY ("planetId") REFERENCES "Planet"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Planet" ADD CONSTRAINT "Planet_statisticsId_fkey" FOREIGN KEY ("statisticsId") REFERENCES "PlanetStatistics"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "PlanetStatistics" ADD CONSTRAINT "PlanetStatistics_planetId_fkey" FOREIGN KEY ("planetId") REFERENCES "Planet"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Hazard" ADD CONSTRAINT "Hazard_planetId_fkey" FOREIGN KEY ("planetId") REFERENCES "Planet"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

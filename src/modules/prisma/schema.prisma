@@ -16,26 +16,25 @@ datasource db {
 
 model Planet {
   id             Int              @id @default(autoincrement())
-  index          Int
+  index          BigInt
   name           String           @unique
   sector         String 
   biome          Biome            @relation(fields: [biomeId], references: [id])
   biomeId        Int
   hazards        Hazard[]
-  hash           Int
-  positionX      Int
-  positionY      Int
-  waypoints      Int[]
-  maxHealth      Int
-  health         Int
+  hash           BigInt
+  waypoints      BigInt[]
+  maxHealth      BigInt
+  health         BigInt
   disabled       Boolean
   initialOwner   String
   currentOwner   String
   regenPerSecond Float
   event          PlanetEvent?     @relation(fields: [eventId], references: [id])
   eventId        Int?
-  statistics     PlanetStatistics @relation(fields: [id], references: [id])
-  attacking      Int[]
+  statistics     PlanetStatistics @relation(fields: [statisticsId], references: [id])
+  statisticsId   Int @unique
+  attacking      BigInt[]
 } 
 
 model Biome {
@@ -55,33 +54,33 @@ model Hazard {
 
 model PlanetEvent {
   id                Int       @default(autoincrement()) @id
-  eventType         Int
+  eventType         BigInt
   faction           String
-  health            Int
-  maxHealth         Int
+  health            BigInt
+  maxHealth         BigInt
   startTime         DateTime
   endTime           DateTime
-  campaignId        Int
-  jointOperationIds Int[]
+  campaignId        BigInt
+  jointOperationIds BigInt[]
   planets           Planet[]
 }
 
 model PlanetStatistics {
-  id                 Int       @id
-  missionsWon        Int
-  missionsLost       Int
-  missionTime        Int
-  terminidKills      Int
-  automatonKills     Int
-  illuminateKills    Int
-  bulletsFired       Int
-  bulletsHit         Int
-  timePlayed         Int
-  deaths             Int
-  revives            Int
-  friendlies         Int
-  missionSuccessRate Int
-  accuracy           Int
-  playerCount        Int
+  id                 Int       @default(autoincrement()) @id
+  missionsWon        BigInt
+  missionsLost       BigInt
+  missionTime        BigInt
+  terminidKills      BigInt
+  automatonKills     BigInt
+  illuminateKills    BigInt
+  bulletsFired       BigInt
+  bulletsHit         BigInt
+  timePlayed         BigInt
+  deaths             BigInt
+  revives            BigInt
+  friendlies         BigInt
+  missionSuccessRate BigInt
+  accuracy           BigInt
+  playerCount        BigInt
   planet             Planet?
 }

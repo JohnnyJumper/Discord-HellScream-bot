@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as assert from 'assert';
 import { PrismaModule } from 'modules/prisma/prisma.module';
 import { BotModule } from './bot/bot.module';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { BotModule } from './bot/bot.module';
       isGlobal: true,
     }),
     PrismaModule,
+    HttpModule,
     DiscordModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (config: ConfigService) => {
