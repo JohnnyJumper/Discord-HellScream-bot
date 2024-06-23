@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { GatewayIntentBits } from "discord.js";
 import { PrismaModule } from "modules/prisma/prisma.module";
 import { BotModule } from "./bot/bot.module";
+import { OpenAiModule } from "./openai/openai.module";
 
 @Module({
 	imports: [
@@ -43,6 +44,7 @@ import { BotModule } from "./bot/bot.module";
 			inject: [ConfigService],
 		}),
 		BotModule,
+		OpenAiModule,
 	],
 	controllers: [],
 	providers: [],

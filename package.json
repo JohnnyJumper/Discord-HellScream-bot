@@ -34,6 +34,7 @@
     "axios": "^1.7.2",
     "class-transformer": "^0.5.1",
     "discord.js": "^14.15.3",
+    "openai": "^4.52.0",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1"
   },
