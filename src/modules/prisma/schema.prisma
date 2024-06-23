@@ -35,6 +35,8 @@ model Planet {
   statistics     PlanetStatistics @relation(fields: [statisticsId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   statisticsId   Int @unique
   attacking      BigInt[]
+
+  @@index([index])
 } 
 
 model Biome {
