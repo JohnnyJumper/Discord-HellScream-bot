@@ -3,9 +3,11 @@ import { DiscordModule } from "@discord-nestjs/core";
 import { HttpModule } from "@nestjs/axios";
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { ScheduleModule } from "@nestjs/schedule";
 import { GatewayIntentBits } from "discord.js";
 import { PrismaModule } from "modules/prisma/prisma.module";
 import { BotModule } from "./bot/bot.module";
+import { CronModule } from "./cronJobs/cron.module";
 import { OpenAiModule } from "./openai/openai.module";
 
 @Module({
@@ -43,8 +45,10 @@ import { OpenAiModule } from "./openai/openai.module";
 			},
 			inject: [ConfigService],
 		}),
+		ScheduleModule.forRoot(),
 		BotModule,
 		OpenAiModule,
+		CronModule,
 	],
 	controllers: [],
 	providers: [],

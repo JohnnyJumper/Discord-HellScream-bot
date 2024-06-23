@@ -1,5 +1,5 @@
-import { Command, Handler } from "@discord-nestjs/core";
-import { type CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { Command, Handler, InjectDiscordClient } from "@discord-nestjs/core";
+import { type CommandInteraction } from "discord.js";
 import { NewsAPIService } from "modules/helldiversAPI/news.service";
 
 @Command({
@@ -8,7 +8,10 @@ import { NewsAPIService } from "modules/helldiversAPI/news.service";
 	include: [],
 })
 export class NewsCommand {
-	constructor(private readonly newsService: NewsAPIService) {}
+	constructor(
+		@InjectDiscordClient()
+		private readonly newsService: NewsAPIService,
+	) {}
 
 	@Handler()
 	async onNewsCommand(interaction: CommandInteraction): Promise<void> {
@@ -30,10 +33,10 @@ export class NewsCommand {
 
 		for (const news of freshNews) {
 			const response = `\n${this.formatMessage(news.message)}\n`;
-			await channel?.send(response);
+			await channel.send(response);
 		}
 
-		await channel?.send("Now get your ass to the frontline, helldiver!");
+		await channel.send("Now get your ass to the frontline, helldiver!");
 	}
 
 	private formatMessage(message: string): string {
