@@ -25,7 +25,7 @@ export class NewsCommand {
 			.sort((a, b) => b.published - a.published)
 			.slice(0, 3);
 
-		const response = "*Maggot* here is the fresh news from the frontline:\n";
+		const response = "*Maggot* here are the fresh news from the frontline:\n";
 		await interaction.followUp(response);
 
 		for (const news of freshNews) {
