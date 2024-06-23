@@ -1,11 +1,13 @@
 import { Module } from "@nestjs/common";
+import { BotModule } from "modules/bot/bot.module";
 import { HellDiversAPIModule } from "modules/helldiversAPI/helldiversAPI.module";
-import { RefetchPlanets } from "./refetchPlanets.service";
+import { NewsTask } from "./newsTask.service";
+import { PlanetsTask } from "./planetsTask.service";
 
 @Module({
-	imports: [HellDiversAPIModule],
+	imports: [HellDiversAPIModule, BotModule],
 	controllers: [],
-	providers: [RefetchPlanets],
-	exports: [RefetchPlanets],
+	providers: [PlanetsTask, NewsTask],
+	exports: [PlanetsTask, NewsTask],
 })
 export class CronModule {}

@@ -4,14 +4,14 @@ import { PlanetsAPIService } from "modules/helldiversAPI/planet.service";
 import { PrismaService } from "modules/prisma/prisma.service";
 
 @Injectable()
-export class RefetchPlanets {
+export class PlanetsTask {
 	private logger: Logger;
 
 	constructor(
 		private readonly prisma: PrismaService,
 		private readonly planetService: PlanetsAPIService,
 	) {
-		this.logger = new Logger(`CronJob: ${RefetchPlanets.name}`);
+		this.logger = new Logger(`CronJob: ${PlanetsTask.name}`);
 	}
 
 	@Cron(CronExpression.EVERY_10_SECONDS, {

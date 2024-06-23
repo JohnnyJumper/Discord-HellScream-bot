@@ -18,7 +18,7 @@ export class NewsAPIService {
 		this.logger = new Logger(NewsAPIService.name);
 	}
 
-	async fetchAndStoreNews() {
+	async fetchNews() {
 		const url = new URL(`${this.baseurl}/NewsFeed/801`);
 		const { data } = await firstValueFrom(
 			this.http.get<NewsType[]>(url.href).pipe(
@@ -29,20 +29,10 @@ export class NewsAPIService {
 			),
 		);
 
-		this.logger.log(`Fetched ${data.length} news`);
-		let storedNews = 0;
-		for (const news of data) {
-			const stored = await this.createNewsRecord(news);
-			if (stored !== null) {
-				storedNews += 1;
-				this.logger.log(`Stored ${storedNews} news`);
-			}
-		}
-
-		return data;
+		return data.sort((a, b) => b.published - a.published);
 	}
 
-	private async createNewsRecord(news: NewsType) {
+	async storeNewsIfNew(news: NewsType) {
 		const isExisting = await this.prisma.news.findFirst({
 			where: {
 				message: news.message,
