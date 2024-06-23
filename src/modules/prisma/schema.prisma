@@ -30,8 +30,8 @@ model Planet {
   initialOwner   String
   currentOwner   String
   regenPerSecond Float
-  event          PlanetEvent?     @relation(fields: [eventId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  eventId        Int?
+  event          PlanetEvent?     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId        Int?             @unique
   statistics     PlanetStatistics @relation(fields: [statisticsId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   statisticsId   Int @unique
   attacking      BigInt[]
@@ -64,7 +64,8 @@ model PlanetEvent {
   endTime           DateTime
   campaignId        BigInt
   jointOperationIds BigInt[]
-  planets           Planet[]
+  planetId          Int       @unique
+  planet            Planet?
 }
 
 model PlanetStatistics {
