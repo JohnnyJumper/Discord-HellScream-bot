@@ -16,7 +16,7 @@ datasource db {
 
 model Planet {
   id             Int              @id @default(autoincrement())
-  index          BigInt
+  index          BigInt           @unique
   name           String           @unique
   sector         String 
   biome          Biome            @relation(fields: [biomeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
