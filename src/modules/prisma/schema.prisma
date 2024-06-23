@@ -19,7 +19,7 @@ model Planet {
   index          BigInt
   name           String           @unique
   sector         String 
-  biome          Biome            @relation(fields: [biomeId], references: [id])
+  biome          Biome            @relation(fields: [biomeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   biomeId        Int
   hazards        Hazard[]
   hash           BigInt
@@ -30,9 +30,9 @@ model Planet {
   initialOwner   String
   currentOwner   String
   regenPerSecond Float
-  event          PlanetEvent?     @relation(fields: [eventId], references: [id])
+  event          PlanetEvent?     @relation(fields: [eventId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   eventId        Int?
-  statistics     PlanetStatistics @relation(fields: [statisticsId], references: [id])
+  statistics     PlanetStatistics @relation(fields: [statisticsId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   statisticsId   Int @unique
   attacking      BigInt[]
 } 
@@ -49,7 +49,7 @@ model Hazard {
   name        String
   description String
   planetId    Int
-  planet      Planet    @relation(fields: [planetId], references: [id])
+  planet      Planet    @relation(fields: [planetId], references: [id], onUpdate: Cascade, onDelete: Cascade) 
 }
 
 model PlanetEvent {
@@ -83,4 +83,10 @@ model PlanetStatistics {
   accuracy           BigInt
   playerCount        BigInt
   planet             Planet?
+}
+
+model News {
+  id                Int       @default(autoincrement()) @id
+  published         DateTime
+  message           String
 }

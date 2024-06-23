@@ -59,3 +59,11 @@ export type PlanetStatisticsType = {
   accuracy: number;
   playerCount: number;
 };
+
+export type NewsType = {
+  id: number;
+  /** unix time in seconds */
+  published: number;
+  type: number;
+  message: string;
+};
