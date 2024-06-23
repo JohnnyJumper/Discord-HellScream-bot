@@ -64,7 +64,7 @@ model PlanetEvent {
   campaignId        BigInt
   jointOperationIds BigInt[]
   planetIndex       BigInt       @unique
-  planet            Planet?      @relation(fields: [planetIndex], references: [index], onDelete: Cascade)
+  planet            Planet      @relation(fields: [planetIndex], references: [index], onDelete: Cascade)
 }
 
 model PlanetStatistics {
