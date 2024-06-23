@@ -1,5 +1,5 @@
 import { Handler, SubCommand } from "@discord-nestjs/core";
-import type { PlanetsAPIService } from "modules/helldiversAPI/planet.service";
+import { PlanetsAPIService } from "modules/helldiversAPI/planet.service";
 
 export class PlanetUpdateDto {}
 
@@ -9,7 +9,7 @@ export class PlanetsUpdateSubCommand {
 
 	@Handler()
 	async onPlanetUpdateCommand(): Promise<string> {
-		// await this.planetService.getPlanets();
+		await this.planetService.getPlanets();
 		return "Success";
 	}
 }

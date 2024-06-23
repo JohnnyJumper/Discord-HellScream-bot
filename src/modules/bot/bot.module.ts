@@ -7,8 +7,6 @@ import { PlanetsUpdateSubCommand } from "./commands/planets/update.command";
 
 @Module({
 	imports: [DiscordModule.forFeature(), HellDiversAPIModule],
-	providers: [
-		// PlanetsCommand, PlanetsUpdateSubCommand
-	],
+	providers: [NewsCommand, PlanetsCommand, PlanetsUpdateSubCommand],
 })
 export class BotModule {}
