@@ -14,7 +14,9 @@ export class RefetchPlanets {
 		this.logger = new Logger(`[ Task ]: ${RefetchPlanets.name}`);
 	}
 
-	@Cron(CronExpression.EVERY_10_SECONDS)
+	@Cron(CronExpression.EVERY_10_SECONDS, {
+		disabled: process.env.NODE_ENV === "development",
+	})
 	async fetchPlanets() {
 		const planetsData = await this.planetService.fetchPlanetsData();
 		this.logger.log(`Fetched ${planetsData.length} planets`);
