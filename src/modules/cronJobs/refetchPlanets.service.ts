@@ -11,7 +11,7 @@ export class RefetchPlanets {
 		private readonly prisma: PrismaService,
 		private readonly planetService: PlanetsAPIService,
 	) {
-		this.logger = new Logger(`[ Task ]: ${RefetchPlanets.name}`);
+		this.logger = new Logger(`CronJob: ${RefetchPlanets.name}`);
 	}
 
 	@Cron(CronExpression.EVERY_10_SECONDS, {
