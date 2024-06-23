@@ -13,7 +13,13 @@ export class NewsCommand {
 	@Handler()
 	async onNewsCommand(interaction: CommandInteraction): Promise<void> {
 		await interaction.deferReply();
-
+		const channel = interaction.channel;
+		if (!channel) {
+			await interaction.followUp(
+				"No channel is available. Should never happen. PANIC!",
+			);
+			return;
+		}
 		const news = await this.newsService.fetchAndStoreNews();
 		const freshNews = news
 			.sort((a, b) => b.published - a.published)
@@ -21,7 +27,6 @@ export class NewsCommand {
 
 		const response = "*Maggot* here is the fresh news from the frontline:\n";
 		await interaction.followUp(response);
-		const channel = interaction.channel;
 
 		for (const news of freshNews) {
 			const response = `\n${this.formatMessage(news.message)}\n`;
