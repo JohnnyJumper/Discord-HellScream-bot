@@ -1,4 +1,9 @@
 import { Injectable } from "@nestjs/common";
+import { WarStatusTask } from "modules/cronJobs/warStatusTask";
+import {
+	PlanetDB,
+	PlanetStatisticsTypeExposed,
+} from "modules/helldiversAPI/types";
 import OpenAI from "openai";
 
 type OpenAIMessage = {
@@ -13,9 +18,11 @@ export class OpenAIService {
 	async voice({
 		userInput,
 		hintInput,
+		max_token,
 	}: {
 		userInput?: string;
 		hintInput?: string;
+		max_token?: number;
 	}): Promise<string | null> {
 		if (!userInput && !hintInput) return null;
 
@@ -31,11 +38,37 @@ export class OpenAIService {
 		const completion = await this.openai.chat.completions.create({
 			messages: [...prompts],
 			model: "gpt-4o",
-			max_tokens: 200,
+			max_tokens: max_token ?? 200,
 			n: 1,
 		});
 
 		return completion.choices[0].message.content;
+	}
+
+	constructActivePlanetsPrompt(
+		activePlanets: (Omit<PlanetDB, "statistics"> & {
+			statistics: PlanetStatisticsTypeExposed;
+		})[],
+	) {
+		const planetsPromptChunks: string[] = ["### Active Planets"];
+
+		for (const planet of activePlanets) {
+			const planetStatistics = planet.statistics;
+			const prompt =
+				`## Planet name ${planet.name} with following biome: ${planet.biome.description}.\n` +
+				"# Planet Statistics: " +
+				// todo(johnny) move this into some utility
+				`${this.toLLMJson(planetStatistics)}`;
+			planetsPromptChunks.push(prompt);
+		}
+
+		return planetsPromptChunks.join("\n");
+	}
+
+	toLLMJson(obj: unknown): string {
+		return JSON.stringify(obj, (_key, value) =>
+			typeof value === "bigint" ? value.toString() : value,
+		);
 	}
 
 	private buildUserPrompt(prompt: string): OpenAIMessage {

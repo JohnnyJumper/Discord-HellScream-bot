@@ -13,6 +13,7 @@ import {
 import {
 	BiomeType,
 	HazardType,
+	PlanetDB,
 	PlanetEventType,
 	PlanetStatisticsType,
 	PlanetType,
@@ -38,6 +39,22 @@ export class PrismaService
 
 	async onModuleDestroy() {
 		await this.$disconnect();
+	}
+
+	async findActivePlanets(): Promise<PlanetDB[]> {
+		return this.planet.findMany({
+			where: {
+				event: {
+					isNot: null,
+				},
+			},
+			include: {
+				hazards: true,
+				statistics: true,
+				event: true,
+				biome: true,
+			},
+		}) as Promise<PlanetDB[]>;
 	}
 
 	async createOrUpdateWarStatus(warStatus: WarStatusType) {

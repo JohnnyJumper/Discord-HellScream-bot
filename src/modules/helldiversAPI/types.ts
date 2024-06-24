@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client";
+
 export type PlanetType = {
 	index: number;
 	name: string;
@@ -21,6 +23,15 @@ export type PlanetType = {
 	attacking: number[];
 };
 
+export type PlanetDB = Prisma.PlanetGetPayload<{
+	include: {
+		biome: true;
+		statistics: true;
+		event: true;
+		hazards: true;
+	};
+}>;
+
 export type BiomeType = {
 	name: string;
 	description: string;
@@ -43,22 +54,27 @@ export type PlanetEventType = {
 };
 
 export type PlanetStatisticsType = {
-	missionsWon: number;
-	missionsLost: number;
-	missionTime: number;
-	terminidKills: number;
-	automatonKills: number;
-	illuminateKills: number;
-	bulletsFired: number;
-	bulletsHit: number;
-	timePlayed: number;
-	deaths: number;
-	revives: number;
-	friendlies: number;
-	missionSuccessRate: number;
-	accuracy: number;
-	playerCount: number;
+	missionsWon: bigint;
+	missionsLost: bigint;
+	missionTime: bigint;
+	terminidKills: bigint;
+	automatonKills: bigint;
+	illuminateKills: bigint;
+	bulletsFired: bigint;
+	bulletsHit: bigint;
+	timePlayed: bigint;
+	deaths: bigint;
+	revives: bigint;
+	friendlies: bigint;
+	missionSuccessRate: bigint;
+	accuracy: bigint;
+	playerCount: bigint;
 };
+
+export type PlanetStatisticsTypeExposed = Omit<
+	PlanetStatisticsType,
+	"revives" | "friendlies" | "id"
+>;
 
 export type NewsType = {
 	id: number;

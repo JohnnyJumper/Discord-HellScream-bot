@@ -8,6 +8,10 @@ import {
 	TextBasedChannel,
 	TextChannel,
 } from "discord.js";
+import {
+	PlanetDB,
+	PlanetStatisticsTypeExposed,
+} from "modules/helldiversAPI/types";
 import { OpenAIService } from "modules/openai/openai.service";
 import { DiscordTextChannel } from "./types";
 
@@ -36,6 +40,14 @@ export class BotService {
 		});
 	}
 
+	async constructActivePlanetsPrompt(
+		activePlanets: (Omit<PlanetDB, "statistics"> & {
+			statistics: PlanetStatisticsTypeExposed;
+		})[],
+	) {
+		return this.openai.constructActivePlanetsPrompt(activePlanets);
+	}
+
 	async sendUserReply(userInput: string, channel?: DiscordTextChannel | null) {
 		const message = await this.openai.voice({
 			userInput,
@@ -50,9 +62,11 @@ export class BotService {
 	async sendMessageBasedOnHint(
 		hint: string,
 		channel?: DiscordTextChannel | null,
+		max_token?: number,
 	) {
 		const message = await this.openai.voice({
 			hintInput: hint,
+			max_token,
 		});
 
 		if (message === null) return null;

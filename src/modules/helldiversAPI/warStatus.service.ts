@@ -1,10 +1,14 @@
 import { HttpService } from "@nestjs/axios";
 import { Injectable, Logger } from "@nestjs/common";
 import type { AxiosError } from "axios";
+import { WarStatusTask } from "modules/cronJobs/warStatusTask";
 import { PrismaService } from "modules/prisma/prisma.service";
 import { catchError, firstValueFrom } from "rxjs";
-import type { WarStatusType } from "./types";
-
+import type {
+	PlanetDB,
+	PlanetStatisticsTypeExposed,
+	WarStatusType,
+} from "./types";
 @Injectable()
 export class WarStatusAPIService {
 	private readonly logger: Logger;
@@ -36,7 +40,29 @@ export class WarStatusAPIService {
 		const warStatus = await this._fetchWarStatus();
 		const updatedData = await this.prisma.createOrUpdateWarStatus(warStatus);
 		const exposedWarStatistics = this.exposeWarStatistics(updatedData);
-		return exposedWarStatistics;
+
+		const activeRawPlanets = await this.prisma.findActivePlanets();
+		const activePlanets = this.excludeFieldsFromStatistics(activeRawPlanets);
+
+		return {
+			...exposedWarStatistics,
+			activePlanets,
+		};
+	}
+
+	private excludeFieldsFromStatistics(planets: PlanetDB[]): (Omit<
+		PlanetDB,
+		"statistics"
+	> & {
+		statistics: PlanetStatisticsTypeExposed;
+	})[] {
+		return planets.map((planet) => {
+			const { revives, friendlies, ...filteredStatistics } = planet.statistics;
+			return {
+				...planet,
+				statistics: filteredStatistics,
+			};
+		});
 	}
 
 	private exposeWarStatistics({

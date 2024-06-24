@@ -7,7 +7,7 @@ import { WarStatusAPIService } from "./warStatus.service";
 
 @Module({
 	imports: [HttpModule, PrismaModule],
-	providers: [PlanetsAPIService, NewsAPIService, WarStatusAPIService],
-	exports: [PlanetsAPIService, NewsAPIService, WarStatusAPIService],
+	providers: [WarStatusAPIService, PlanetsAPIService, NewsAPIService],
+	exports: [WarStatusAPIService, PlanetsAPIService, NewsAPIService],
 })
 export class HellDiversAPIModule {}
