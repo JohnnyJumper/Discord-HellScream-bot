@@ -17,7 +17,7 @@ export class WarStatusTask {
 		this.logger = new Logger(`CronJob: ${WarStatusTask.name}`);
 	}
 
-	@Cron(CronExpression.EVERY_3_HOURS, {
+	@Cron(CronExpression.EVERY_5_HOURS, {
 		disabled: process.env.NODE_ENV === "development",
 	})
 	async reportWarStatus(channel?: DiscordTextChannel) {
