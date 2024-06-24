@@ -37,7 +37,7 @@ export class BotService {
 
 	async sendUserReply(
 		userInput: string,
-		channel?: GuildTextBasedChannel | TextBasedChannel,
+		channel?: GuildTextBasedChannel | TextBasedChannel | null,
 	) {
 		const message = await this.openai.voice({
 			userInput,
@@ -49,12 +49,18 @@ export class BotService {
 		return this.channel.send(message);
 	}
 
-	async sendMessageBasedOnHint(hint: string) {
+	async sendMessageBasedOnHint(
+		hint: string,
+		channel?: GuildTextBasedChannel | TextBasedChannel | null,
+	) {
 		const message = await this.openai.voice({
 			hintInput: hint,
 		});
 
 		if (message === null) return null;
+		if (channel) {
+			return channel.send(message);
+		}
 		return this.channel.send(message);
 	}
 }
