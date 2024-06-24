@@ -9,6 +9,7 @@ import {
 	TextChannel,
 } from "discord.js";
 import { OpenAIService } from "modules/openai/openai.service";
+import { DiscordTextChannel } from "./types";
 
 @Injectable()
 export class BotService {
@@ -35,10 +36,7 @@ export class BotService {
 		});
 	}
 
-	async sendUserReply(
-		userInput: string,
-		channel?: GuildTextBasedChannel | TextBasedChannel | null,
-	) {
+	async sendUserReply(userInput: string, channel?: DiscordTextChannel | null) {
 		const message = await this.openai.voice({
 			userInput,
 		});
@@ -51,7 +49,7 @@ export class BotService {
 
 	async sendMessageBasedOnHint(
 		hint: string,
-		channel?: GuildTextBasedChannel | TextBasedChannel | null,
+		channel?: DiscordTextChannel | null,
 	) {
 		const message = await this.openai.voice({
 			hintInput: hint,

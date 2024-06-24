@@ -5,9 +5,10 @@ import { OpenAiModule } from "modules/openai/openai.module";
 import { BotGateway } from "./bot.gateway";
 import { BotService } from "./bot.service";
 import { ContributeCommand } from "./commands/contribute.command";
+import { WarStatusCommand } from "./commands/warStatus.command";
 @Module({
 	imports: [DiscordModule.forFeature(), HellDiversAPIModule, OpenAiModule],
-	providers: [BotService, BotGateway, ContributeCommand],
+	providers: [BotService, BotGateway, ContributeCommand, WarStatusCommand],
 	exports: [BotService],
 })
 export class BotModule {}
