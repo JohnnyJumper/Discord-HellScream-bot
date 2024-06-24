@@ -16,6 +16,7 @@
 		"prisma:migrateRaw": "pnpm prisma migrate dev  --schema ./src/modules/prisma/schema.prisma",
 		"prisma:migrate": "pnpm prisma:migrateRaw && pnpm prisma:generate",
 		"prisma:docker:migrate": "docker exec nestjs-api pnpm prisma:migrate",
+		"docker:run": "docker compose up --build -d",
 		"lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
 		"test": "jest",
 		"test:watch": "jest --watch",
