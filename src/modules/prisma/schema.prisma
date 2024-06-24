@@ -87,6 +87,39 @@ model PlanetStatistics {
   planet             Planet?
 }
 
+model CurrentWarStatus {
+  id                Int       @default(autoincrement()) @id
+  started           DateTime
+  ended             DateTime
+  now               DateTime
+  clientVersion     String
+  factions          String[]
+  impactMultiplier  Float
+  statistics        CurrentWarStatistics @relation(fields: [statisticsId], references: [id])
+  statisticsId      Int @unique
+}
+
+
+model CurrentWarStatistics {
+  id                  Int      @default(autoincrement()) @id
+  missionsWon         BigInt
+  missionsLost        BigInt
+  missionTime         BigInt
+  terminidKills       BigInt
+  automatonKills      BigInt
+  illuminateKills     BigInt
+  bulletsFired        BigInt
+  bulletsHit          BigInt
+  timePlayed          BigInt
+  deaths              BigInt
+  revives             BigInt
+  friendlies          BigInt
+  missionSuccessRate  BigInt
+  accuracy            BigInt
+  playerCount         BigInt
+  currentWar          CurrentWarStatus?
+}
+
 model News {
   id                Int       @default(autoincrement()) @id
   published         DateTime

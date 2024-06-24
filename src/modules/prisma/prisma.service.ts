@@ -16,6 +16,7 @@ import {
 	PlanetEventType,
 	PlanetStatisticsType,
 	PlanetType,
+	WarStatusType,
 } from "modules/helldiversAPI/types";
 import { PrismaTransaction } from "./types";
 
@@ -37,6 +38,98 @@ export class PrismaService
 
 	async onModuleDestroy() {
 		await this.$disconnect();
+	}
+
+	async createOrUpdateWarStatus(warStatus: WarStatusType) {
+		return this.$transaction(async (prisma) => {
+			const { statistics, ...status } = warStatus;
+			const currentStatus = await prisma.currentWarStatus.findFirst({});
+
+			if (!currentStatus) {
+				return this.createWarStatus(prisma, statistics, status);
+			}
+
+			await prisma.currentWarStatistics.update({
+				where: {
+					id: currentStatus.statisticsId,
+				},
+				data: {
+					accuracy: statistics.accuracy,
+					automatonKills: statistics.automatonKills,
+					terminidKills: statistics.terminidKills,
+					illuminateKills: statistics.illuminateKills,
+					bulletsFired: statistics.bulletsFired,
+					bulletsHit: statistics.bulletsHit,
+					deaths: statistics.deaths,
+					friendlies: statistics.friendlies,
+					missionsLost: statistics.missionsLost,
+					missionSuccessRate: statistics.missionSuccessRate,
+					missionsWon: statistics.missionsWon,
+					missionTime: statistics.missionTime,
+					playerCount: statistics.playerCount,
+					revives: statistics.revives,
+					timePlayed: statistics.timePlayed,
+				},
+			});
+
+			return await prisma.currentWarStatus.update({
+				where: {
+					id: currentStatus.id,
+				},
+				data: {
+					clientVersion: currentStatus.clientVersion,
+					ended: currentStatus.ended,
+					factions: currentStatus.factions,
+					impactMultiplier: currentStatus.impactMultiplier,
+					now: currentStatus.now,
+					started: currentStatus.started,
+				},
+				include: {
+					statistics: true,
+				},
+			});
+		});
+	}
+
+	async createWarStatus(
+		prisma: PrismaTransaction,
+		statistics: WarStatusType["statistics"],
+		status: Omit<WarStatusType, "statistics">,
+	) {
+		const currentStatistics = await prisma.currentWarStatistics.create({
+			data: {
+				accuracy: statistics.accuracy,
+				automatonKills: statistics.automatonKills,
+				terminidKills: statistics.terminidKills,
+				illuminateKills: statistics.illuminateKills,
+				bulletsFired: statistics.bulletsFired,
+				bulletsHit: statistics.bulletsHit,
+				deaths: statistics.deaths,
+				friendlies: statistics.friendlies,
+				missionsLost: statistics.missionsLost,
+				missionsWon: statistics.missionsWon,
+				missionSuccessRate: statistics.missionSuccessRate,
+				missionTime: statistics.missionTime,
+				playerCount: statistics.playerCount,
+				revives: statistics.revives,
+				timePlayed: statistics.timePlayed,
+			},
+		});
+
+		return prisma.currentWarStatus.create({
+			data: {
+				clientVersion: status.clientVersion,
+				ended: status.ended,
+				now: status.now,
+				impactMultiplier: status.impactMultiplier,
+				started: status.started,
+				factions: status.factions,
+				statisticsId: currentStatistics.id,
+			},
+			include: {
+				statistics: true,
+			},
+		});
 	}
 
 	async updateOrCreatePlanet(planetData: PlanetType) {
