@@ -37,11 +37,11 @@ export class NewsTask {
 
 	private formatMessage(message: string): string {
 		const lines = message.split("\n");
-		const title = `**${lines[0].replaceAll("<i=1>", "*").replaceAll("</i>", "*")}**`;
+		const title = `**${lines[0]?.replaceAll("<i=1>", "*")?.replaceAll("</i>", "*")}**`;
 		const body =
 			lines[1] === ""
-				? lines[2].replaceAll("<i=1>", "*").replaceAll("</i>", "*")
-				: lines[1].replaceAll("<i=1>", "*").replaceAll("</i>", "*");
+				? lines[2]?.replaceAll("<i=1>", "*")?.replaceAll("</i>", "*")
+				: lines[1]?.replaceAll("<i=1>", "*")?.replaceAll("</i>", "*");
 
 		const formated = `${title}\n${body}`;
 
