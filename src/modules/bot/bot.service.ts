@@ -2,16 +2,7 @@ import * as assert from "node:assert";
 import { InjectDiscordClient } from "@discord-nestjs/core";
 import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import {
-	Client,
-	GuildTextBasedChannel,
-	TextBasedChannel,
-	TextChannel,
-} from "discord.js";
-import {
-	PlanetDB,
-	PlanetStatisticsTypeExposed,
-} from "modules/helldiversAPI/types";
+import { Client, TextChannel } from "discord.js";
 import { OpenAIService } from "modules/openai/openai.service";
 import { DiscordTextChannel } from "./types";
 
@@ -40,12 +31,18 @@ export class BotService {
 		});
 	}
 
-	async constructActivePlanetsPrompt(
-		activePlanets: (Omit<PlanetDB, "statistics"> & {
-			statistics: PlanetStatisticsTypeExposed;
-		})[],
-	) {
-		return this.openai.constructActivePlanetsPrompt(activePlanets);
+	async getVoicedUserMessage(input: string, max_token?: number) {
+		return this.openai.voice({
+			userInput: input,
+			max_token,
+		});
+	}
+
+	async getVoicedHintMessage(hint: string, max_token?: number) {
+		return this.openai.voice({
+			hintInput: hint,
+			max_token,
+		});
 	}
 
 	async sendUserReply(userInput: string, channel?: DiscordTextChannel | null) {

@@ -109,3 +109,16 @@ export type WarStatusType = {
 		playerCount: bigint;
 	};
 };
+
+export type ExposedWarStatistics = {
+	factions: string[];
+	impactMultiplier: number;
+	totalKills: bigint;
+	automatonKills: bigint;
+	terminidKills: bigint;
+	illuminateKills: bigint;
+	averageAccuracy: string;
+	bulletsFired: bigint;
+	bulletsHit: bigint;
+	missionSuccessRate: bigint;
+};

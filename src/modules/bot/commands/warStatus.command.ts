@@ -5,6 +5,7 @@ import { WarStatusTask } from "modules/cronJobs/warStatusTask";
 import { PlanetDB } from "modules/helldiversAPI/types";
 import { WarStatusAPIService } from "modules/helldiversAPI/warStatus.service";
 import { OpenAIService } from "modules/openai/openai.service";
+import { PromptComposer } from "modules/openai/promptComposer.service";
 import { BotService } from "../bot.service";
 
 @Command({
@@ -17,6 +18,7 @@ export class WarStatusCommand {
 	constructor(
 		private readonly botService: BotService,
 		private readonly warStatusService: WarStatusAPIService,
+		private readonly promptComposer: PromptComposer,
 	) {
 		this.logger = new Logger(`Command: ${WarStatusCommand.name}`);
 	}
@@ -24,22 +26,17 @@ export class WarStatusCommand {
 	@Handler()
 	async onWarStatusCommand(interaction: CommandInteraction): Promise<void> {
 		await interaction.deferReply();
-		const channel = interaction.channel;
-		//todo johnny remove duplicate from warStatusTask this might change a lot
 		const { activePlanets, ...warStatus } =
 			await this.warStatusService.fetchWarStatus();
-
-		const planetsPrompt =
-			await this.botService.constructActivePlanetsPrompt(activePlanets);
-
-		const rawHint =
-			"You need to deliver the most important information about current war status:\n" +
-			`### War Status\n${WarStatusTask.toLLMJson(warStatus)}` +
-			"### Active Planets\nMake sure to include planet name, biome, and all importand statistics about this planet" +
-			`${planetsPrompt}` +
-			"\n\n Never imagine numbers, always use the data from provided context especially with numbers";
-
-		await this.botService.sendMessageBasedOnHint(rawHint, channel, 600);
-		await interaction.deleteReply();
+		const hint = this.promptComposer.buildWarStatusPrompt(
+			warStatus,
+			activePlanets,
+		);
+		const response = await this.botService.getVoicedHintMessage(hint, 600);
+		if (response === null) {
+			await interaction.followUp("something went wrong ping johnny");
+			return;
+		}
+		await interaction.followUp(response);
 	}
 }

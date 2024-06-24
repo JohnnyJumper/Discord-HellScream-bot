@@ -3,6 +3,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import OpenAI from "openai";
 import { OpenAIService } from "./openai.service";
+import { PromptComposer } from "./promptComposer.service";
 
 @Module({
 	imports: [ConfigModule],
@@ -19,7 +20,8 @@ import { OpenAIService } from "./openai.service";
 			inject: [ConfigService],
 		},
 		OpenAIService,
+		PromptComposer,
 	],
-	exports: [OpenAIService],
+	exports: [OpenAIService, PromptComposer],
 })
 export class OpenAiModule {}

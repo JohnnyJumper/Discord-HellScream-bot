@@ -1,10 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { WarStatusTask } from "modules/cronJobs/warStatusTask";
-import {
-	PlanetDB,
-	PlanetStatisticsTypeExposed,
-} from "modules/helldiversAPI/types";
 import OpenAI from "openai";
+import { PromptComposer } from "./promptComposer.service";
 
 type OpenAIMessage = {
 	role: "system" | "user" | "assistant";
@@ -13,7 +9,10 @@ type OpenAIMessage = {
 
 @Injectable()
 export class OpenAIService {
-	constructor(private readonly openai: OpenAI) {}
+	constructor(
+		private readonly openai: OpenAI,
+		private readonly promptComposer: PromptComposer,
+	) {}
 
 	async voice({
 		userInput,
@@ -45,32 +44,6 @@ export class OpenAIService {
 		return completion.choices[0].message.content;
 	}
 
-	constructActivePlanetsPrompt(
-		activePlanets: (Omit<PlanetDB, "statistics"> & {
-			statistics: PlanetStatisticsTypeExposed;
-		})[],
-	) {
-		const planetsPromptChunks: string[] = ["### Active Planets"];
-
-		for (const planet of activePlanets) {
-			const planetStatistics = planet.statistics;
-			const prompt =
-				`## Planet name ${planet.name} with following biome: ${planet.biome.description}.\n` +
-				"# Planet Statistics: " +
-				// todo(johnny) move this into some utility
-				`${this.toLLMJson(planetStatistics)}`;
-			planetsPromptChunks.push(prompt);
-		}
-
-		return planetsPromptChunks.join("\n");
-	}
-
-	toLLMJson(obj: unknown): string {
-		return JSON.stringify(obj, (_key, value) =>
-			typeof value === "bigint" ? value.toString() : value,
-		);
-	}
-
 	private buildUserPrompt(prompt: string): OpenAIMessage {
 		return {
 			role: "user",
@@ -86,13 +59,10 @@ export class OpenAIService {
 	}
 
 	private buildSystemPrompt(): OpenAIMessage {
+		const systemPrompt = this.promptComposer.buildSystemPrompt();
 		return {
 			role: "system",
-			content:
-				'You are a general of an army. Your name is "Hellscream". You are outraged and super loud.' +
-				'In most of your messages, you are going to refer to users as "Boot, Princess, Slacker, Turd, Maggot" or similar.' +
-				"Your job is to agitate your users to play Helldivers by providing them with different news and orders." +
-				"You should never imagine that there are new updates. All your messages should be no longer than 100 words",
+			content: systemPrompt,
 		};
 	}
 }

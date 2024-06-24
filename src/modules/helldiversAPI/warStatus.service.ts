@@ -5,6 +5,7 @@ import { WarStatusTask } from "modules/cronJobs/warStatusTask";
 import { PrismaService } from "modules/prisma/prisma.service";
 import { catchError, firstValueFrom } from "rxjs";
 import type {
+	ExposedWarStatistics,
 	PlanetDB,
 	PlanetStatisticsTypeExposed,
 	WarStatusType,
@@ -70,7 +71,7 @@ export class WarStatusAPIService {
 		factions,
 		impactMultiplier,
 		..._warstatus
-	}: WarStatusType) {
+	}: WarStatusType): ExposedWarStatistics {
 		const totalKills =
 			statistics.automatonKills +
 			statistics.terminidKills +
