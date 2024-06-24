@@ -367,11 +367,10 @@ export class PrismaService
 				await prisma.planetEvent.delete({
 					where: { planetIndex: planetIndex },
 				});
-
 				// Disconnect the event from the Planet
 				await prisma.planet.update({
 					where: { index: planetIndex },
-					data: { event: { disconnect: true } },
+					data: { event: undefined },
 				});
 			}
 
