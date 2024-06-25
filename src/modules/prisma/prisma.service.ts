@@ -149,6 +149,35 @@ export class PrismaService
 		});
 	}
 
+	/**
+	 *
+	 * This function compares the planetData provided to the record in database by looking on currentOwner property
+	 * it returns an array with exactly 2 elements. The first element is boolean whether the planet status changed or not
+	 * the second element is an array of strings where first element is what the owner was and the second element is current status
+	 * Blame past johnny :p
+	 * @param planetData
+	 * @returns
+	 */
+	async didPlanetStatusChanged(
+		planetData: PlanetType,
+	): Promise<[boolean, [string, string] | []]> {
+		const existingRecord = await this.planet.findFirst({
+			where: {
+				index: planetData.index,
+			},
+			include: {
+				biome: true,
+				event: true,
+				hazards: true,
+				_count: true,
+			},
+		});
+		if (!existingRecord) return [true, ["unknown", planetData.currentOwner]];
+		if (planetData.currentOwner === existingRecord.currentOwner)
+			return [false, []];
+		return [true, [existingRecord.currentOwner, planetData.currentOwner]];
+	}
+
 	async updateOrCreatePlanet(planetData: PlanetType) {
 		const existingRecord = await this.planet.findFirst({
 			where: {

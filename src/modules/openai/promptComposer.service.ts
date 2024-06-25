@@ -22,6 +22,32 @@ export class PromptComposer {
 		);
 	}
 
+	buildPlanetStatusChangePrompt(
+		statusedChangedPlanets: {
+			index: number;
+			from: string;
+			to: string;
+			name: string;
+		}[],
+	): string | null {
+		const promptLines = ["### Planet Status Report"];
+
+		if (statusedChangedPlanets.length === 0) {
+			return null;
+		}
+		statusedChangedPlanets.map((planet) => {
+			const statusPrompt = planet.to === "Humans" ? "Good Job!" : "Bad Job!";
+			const promptLine =
+				`Planet **${planet.name}** status has changed.` +
+				`It used to belong to **${planet.from}** and now is under **${planet.to}** controll.` +
+				statusPrompt;
+
+			promptLines.push(promptLine);
+		});
+
+		return promptLines.join("\n");
+	}
+
 	buildWarStatusPrompt(
 		warStatus: ExposedWarStatistics,
 		activePlanets: (Omit<PlanetDB, "statistics"> & {
