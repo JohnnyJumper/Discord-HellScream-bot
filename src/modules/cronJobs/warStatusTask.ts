@@ -24,11 +24,18 @@ export class WarStatusTask {
 		const { activePlanets, ...warStatus } =
 			await this.warStatusService.fetchWarStatus();
 
-		const hint = this.promptComposer.buildWarStatusPrompt(
-			warStatus,
-			activePlanets,
-		);
+		const warStatusHint = this.promptComposer.buildWarStatusPrompt(warStatus);
+		const activePlanetsHint =
+			this.promptComposer.buildActivePlanetsPrompt(activePlanets);
 
-		await this.botService.sendMessageBasedOnHint(hint, channel, 600);
+		const warStatusMessage =
+			await this.botService.getVoicedHintMessage(warStatusHint);
+		const activePlanetsMessage =
+			await this.botService.getVoicedHintMessage(activePlanetsHint);
+
+		await this.botService.sendRawMessageToChannel(
+			`${warStatusMessage}\n${activePlanetsMessage}`,
+			channel,
+		);
 	}
 }

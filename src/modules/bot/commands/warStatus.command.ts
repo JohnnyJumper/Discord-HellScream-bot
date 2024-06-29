@@ -28,15 +28,16 @@ export class WarStatusCommand {
 		await interaction.deferReply();
 		const { activePlanets, ...warStatus } =
 			await this.warStatusService.fetchWarStatus();
-		const hint = this.promptComposer.buildWarStatusPrompt(
-			warStatus,
-			activePlanets,
-		);
-		const response = await this.botService.getVoicedHintMessage(hint, 600);
-		if (response === null) {
-			await interaction.followUp("something went wrong ping johnny");
-			return;
-		}
-		await interaction.followUp(response);
+
+		const warStatusHint = this.promptComposer.buildWarStatusPrompt(warStatus);
+		const activePlanetsHint =
+			this.promptComposer.buildActivePlanetsPrompt(activePlanets);
+
+		const warStatusMessage =
+			await this.botService.getVoicedHintMessage(warStatusHint);
+		const activePlanetsMessage =
+			await this.botService.getVoicedHintMessage(activePlanetsHint);
+
+		await interaction.followUp(`${warStatusMessage}\n${activePlanetsMessage}`);
 	}
 }

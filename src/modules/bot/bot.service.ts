@@ -31,6 +31,16 @@ export class BotService {
 		});
 	}
 
+	async sendRawMessageToChannel(
+		message: string,
+		channel?: DiscordTextChannel | null,
+	) {
+		if (channel) {
+			return channel.send(message);
+		}
+		return this.channel.send(message);
+	}
+
 	async getVoicedUserMessage(input: string, max_token?: number) {
 		return this.openai.voice({
 			userInput: input,

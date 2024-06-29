@@ -48,19 +48,18 @@ export class PromptComposer {
 		return promptLines.join("\n");
 	}
 
-	buildWarStatusPrompt(
-		warStatus: ExposedWarStatistics,
-		activePlanets: (Omit<PlanetDB, "statistics"> & {
-			statistics: PlanetStatisticsTypeExposed;
-		})[],
-	): string {
-		const planetsPrompt = this.buildActivePlanetsPrompt(activePlanets);
-		return (
-			"You need to deliver the most important information about current war status:\n" +
-			`### War Status\n${this.toLLMJson(warStatus)}\n` +
-			`${planetsPrompt}` +
-			"\n\n Never imagine numbers, always use the data from provided context especially with numbers"
-		);
+	buildWarStatusPrompt(warStatus: ExposedWarStatistics): string {
+		const warStatusPromptChunks: string[] = [
+			"You need to summarize the most important information about the current war status on the frontline.",
+			"Never image any numbers. You need to deliver the summarization of the status in 700 characters max!",
+			"Make sure to deliver the information in separate paragraphs.",
+			"IT IS VERY IMPORTANT THAT YOU WILL NOT ADDRESS USERS IN ANY WAY AT THE END OF YOUR RESPONSE",
+			"YOU WILL NOT GIVE USERS COMMANDS AT THE END AND WILL JUST PROVIDE THE SUMMARIZATION ONLY!",
+			"### War Status",
+			this.toLLMJson(warStatus),
+		];
+
+		return warStatusPromptChunks.join("\n");
 	}
 
 	buildActivePlanetsPrompt(
@@ -69,17 +68,16 @@ export class PromptComposer {
 		})[],
 	): string {
 		const planetsPromptChunks: string[] = [
+			"Could you summarize the most important information about the current active planets on the frontline?",
+			"Never image any numbers. Could you deliver the summarization of the status in 700 characters max?",
+			"Please make sure the planet name is bolded with ** on both side and always include information about hazards",
+			"Could you make sure to deliver the information in separate paragraphs?",
+			"Make sure not to address users in any way at the begining of your response!",
 			"### Active Planets",
-			"You should alway tell about planet name, biome and hazards.",
 		];
 
 		for (const planet of activePlanets) {
-			const planetStatistics = planet.statistics;
-			const planetHazards = planet.hazards;
-			const prompt =
-				`## Planet name ${planet.name} with following biome: ${planet.biome.description}.\n` +
-				`${this.toLLMJson({ ...planetStatistics, planetHazards })}`;
-			planetsPromptChunks.push(prompt);
+			planetsPromptChunks.push(this.toLLMJson(planet));
 		}
 
 		return planetsPromptChunks.join("\n");
