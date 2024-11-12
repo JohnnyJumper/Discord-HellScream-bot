@@ -125,12 +125,19 @@ model News {
 }
 
 model SteamGames {
-  id                   Int    @id @default(autoincrement())
+  id                   Int     @id @default(autoincrement())
   appId                String
   name                 String
   categories           String
   genres               String
   release_date         String
   detailed_description String
+  header_image         String
+  initial_formatted    String?
+  price_formatted      String?
   about_the_game       String
+  authors              String
+  steam_link           String
+  screenshots          String
+  is_free              Boolean @default(false)
 }

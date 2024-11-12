@@ -20,6 +20,13 @@ export type UniqueTrendingGame = {
   detailed_description: string;
   release_date: string;
   name: string;
+  header_image: string;
+  price_formatted: string | null;
+  initial_formatted: string | null;
+  authors: string;
+  steam_link: string;
+  screenshots: string;
+  is_free: boolean;
 };
 
 export interface SteamAppData {
@@ -33,7 +40,8 @@ export interface SteamAppData {
   supported_languages: string;
   developers: string[];
   publishers: string[];
-  price_overview: {
+  header_image: string;
+  price_overview?: {
     currency: string;
     initial: number;
     final: number;
@@ -41,6 +49,11 @@ export interface SteamAppData {
     initial_formatted: string;
     final_formatted: string;
   };
+  screenshots: {
+    id: number;
+    path_thumbnail: string;
+    path_full: string;
+  }[];
   categories: {
     id: number;
     description: string;

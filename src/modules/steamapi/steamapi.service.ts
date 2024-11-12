@@ -44,11 +44,13 @@ export class SteamAPIService {
       }
       const isExistInDb = await this.checkIfExist(appId);
       if (isExistInDb) {
+        this.logger.warn('game was already scanned skipping');
         continue;
       }
 
       const data = await this.fetchAppData(appId);
       if (!data) {
+        this.logger.warn('game has not app data skipping');
         continue;
       }
       const added = await this.prisma.steamGames.create({
@@ -62,6 +64,16 @@ export class SteamAPIService {
             .map((category) => category.description)
             .join(','),
           name: data.name,
+          authors: data.developers.join(','),
+          header_image: data.header_image,
+          screenshots: data.screenshots
+            .slice(0, 4)
+            .map((screenshot) => screenshot.path_thumbnail)
+            .join(','),
+          steam_link: `https://store.steampowered.com/app/${appId}/`,
+          initial_formatted: data.price_overview?.initial_formatted,
+          price_formatted: data.price_overview?.final_formatted,
+          is_free: data.is_free,
         },
         select: {
           about_the_game: true,
@@ -70,6 +82,13 @@ export class SteamAPIService {
           detailed_description: true,
           release_date: true,
           name: true,
+          authors: true,
+          header_image: true,
+          initial_formatted: true,
+          price_formatted: true,
+          screenshots: true,
+          steam_link: true,
+          is_free: true,
         },
       });
       uniqueGames.push(added);
