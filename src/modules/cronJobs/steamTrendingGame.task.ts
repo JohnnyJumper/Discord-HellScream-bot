@@ -16,7 +16,7 @@ export class SteamTrendingGameTask {
     this.logger = new Logger(`CronJob: ${SteamTrendingGameTask.name}`);
   }
 
-  @Cron(CronExpression.EVERY_WEEKEND, {
+  @Cron(CronExpression.EVERY_WEEK, {
     disabled: process.env.NODE_ENV === 'development',
   })
   async fetchTrendingGames() {
