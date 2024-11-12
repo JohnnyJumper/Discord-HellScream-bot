@@ -7,6 +7,7 @@ type OpenAIMessage = {
   content: string;
 };
 
+//todo enhance the robustness of the service to allow different system prompts in a better way
 @Injectable()
 export class OpenAIService {
   constructor(
@@ -18,14 +19,25 @@ export class OpenAIService {
     userInput,
     hintInput,
     max_token,
+    custom_system_prompt,
   }: {
     userInput?: string;
     hintInput?: string;
     max_token?: number;
+    custom_system_prompt?: string;
   }): Promise<string | null> {
     if (!userInput && !hintInput) return null;
 
-    const prompts: OpenAIMessage[] = [this.buildSystemPrompt()];
+    const prompts: OpenAIMessage[] = [];
+    if (custom_system_prompt) {
+      prompts.push({
+        role: 'system',
+        content: custom_system_prompt,
+      });
+    } else {
+      prompts.push(this.buildSystemPrompt());
+    }
+
     if (hintInput) {
       prompts.push(this.buildHintPrompt(hintInput));
     }

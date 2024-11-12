@@ -9,7 +9,8 @@ import { DiscordTextChannel } from './types';
 @Injectable()
 export class BotService {
   private logger: Logger;
-  private channel: TextChannel;
+  public helldiverChannel: TextChannel;
+  public gamePropositionChannel: TextChannel;
 
   constructor(
     @InjectDiscordClient()
@@ -19,15 +20,32 @@ export class BotService {
   ) {
     this.logger = new Logger(BotService.name);
 
-    const channelID = this.config.get<string>('CHANNEL_ID');
-    assert(channelID, 'CHANNEL_ID env variable is not defined');
+    const helldiverChannelID = this.config.get<string>('CHANNEL_ID');
+    assert(helldiverChannelID, 'CHANNEL_ID env variable is not defined');
+
+    const gamePropositionChannelID = this.config.get<string>(
+      'GAME_PROPOSITION_CHANNEL_ID',
+    );
+    assert(
+      gamePropositionChannelID,
+      'GAME_PROPOSITION_CHANNEL_ID env variable is not defined',
+    );
 
     this.client.on('ready', () => {
-      const channel = this.client.channels.cache.get(channelID) as
-        | TextChannel
-        | undefined;
-      assert(channel, 'Channel was not given');
-      this.channel = channel;
+      const helldiversChannel = this.client.channels.cache.get(
+        helldiverChannelID,
+      ) as TextChannel | undefined;
+      assert(helldiversChannel, 'Helldivers Channel was not provided');
+      this.helldiverChannel = helldiversChannel;
+
+      const gamePropositionChannel = this.client.channels.cache.get(
+        gamePropositionChannelID,
+      ) as TextChannel | undefined;
+      assert(
+        gamePropositionChannel,
+        'Game proposition channel was not provided',
+      );
+      this.gamePropositionChannel = gamePropositionChannel;
     });
   }
 
@@ -38,48 +56,65 @@ export class BotService {
     if (channel) {
       return channel.send(message);
     }
-    return this.channel.send(message);
+    return this.helldiverChannel.send(message);
   }
 
-  async getVoicedUserMessage(input: string, max_token?: number) {
+  async getVoicedUserMessage(
+    input: string,
+    max_token?: number,
+    custom_system_prompt?: string,
+  ) {
     return this.openai.voice({
       userInput: input,
       max_token,
+      custom_system_prompt,
     });
   }
 
-  async getVoicedHintMessage(hint: string, max_token?: number) {
+  async getVoicedHintMessage(
+    hint: string,
+    max_token?: number,
+    custom_system_prompt?: string,
+  ) {
     return this.openai.voice({
       hintInput: hint,
       max_token,
+      custom_system_prompt,
     });
   }
 
-  async sendUserReply(userInput: string, channel?: DiscordTextChannel | null) {
+  async sendUserReply(
+    userInput: string,
+    channel?: DiscordTextChannel | null,
+    custom_system_prompt?: string,
+  ) {
     const message = await this.openai.voice({
       userInput,
+      custom_system_prompt,
     });
     if (message === null) return null;
     if (channel) {
       return channel.send(message);
     }
-    return this.channel.send(message);
+    return this.helldiverChannel.send(message);
   }
 
   async sendMessageBasedOnHint(
     hint: string,
     channel?: DiscordTextChannel | null,
     max_token?: number,
+    custom_system_prompt?: string,
   ) {
     const message = await this.openai.voice({
       hintInput: hint,
       max_token,
+      custom_system_prompt,
     });
 
     if (message === null) return null;
     if (channel) {
       return channel.send(message);
     }
-    return this.channel.send(message);
+    return this.helldiverChannel.send(message);
   }
 }

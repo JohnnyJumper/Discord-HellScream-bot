@@ -9,6 +9,7 @@ import { PrismaModule } from 'modules/prisma/prisma.module';
 import { BotModule } from './bot/bot.module';
 import { CronModule } from './cronJobs/cron.module';
 import { OpenAiModule } from './openai/openai.module';
+import { SteamAPIModule } from './steamapi/steamapi.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { OpenAiModule } from './openai/openai.module';
       inject: [ConfigService],
     }),
     ScheduleModule.forRoot(),
+    SteamAPIModule,
     BotModule,
     OpenAiModule,
     CronModule,
