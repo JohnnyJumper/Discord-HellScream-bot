@@ -21,12 +21,19 @@ export class NewsAPIService {
   async fetchNews() {
     const url = new URL(`${this.baseurl}/NewsFeed/801`);
     const { data } = await firstValueFrom(
-      this.http.get<NewsType[]>(url.href).pipe(
-        catchError((error: AxiosError) => {
-          this.logger.error(error);
-          throw new Error('Failed to fetch news');
-        }),
-      ),
+      this.http
+        .get<NewsType[]>(url.href, {
+          headers: {
+            'X-Super-Client': 'discord server',
+            'X-Super-Contact': 'jeyhunt@gmail.com',
+          },
+        })
+        .pipe(
+          catchError((error: AxiosError) => {
+            this.logger.error(error);
+            throw new Error('Failed to fetch news');
+          }),
+        ),
     );
 
     return data.sort((a, b) => b.published - a.published);

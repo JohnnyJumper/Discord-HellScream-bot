@@ -25,12 +25,19 @@ export class WarStatusAPIService {
   private async _fetchWarStatus() {
     const url = new URL(`${this.baseurl}/war`);
     const { data } = await firstValueFrom(
-      this.http.get<WarStatusType>(url.href).pipe(
-        catchError((error: AxiosError) => {
-          this.logger.error(error);
-          throw new Error('Failed to fetch planet information');
-        }),
-      ),
+      this.http
+        .get<WarStatusType>(url.href, {
+          headers: {
+            'X-Super-Client': 'discord server',
+            'X-Super-Contact': 'jeyhunt@gmail.com',
+          },
+        })
+        .pipe(
+          catchError((error: AxiosError) => {
+            this.logger.error(error);
+            throw new Error('Failed to fetch planet information');
+          }),
+        ),
     );
 
     return data;
