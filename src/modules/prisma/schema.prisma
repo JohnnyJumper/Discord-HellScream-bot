@@ -13,12 +13,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model Planet {
   id             Int              @id @default(autoincrement())
   index          BigInt           @unique
   name           String           @unique
-  sector         String 
+  sector         String
   biome          Biome            @relation(fields: [biomeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   biomeId        Int
   hazards        Hazard[]
@@ -32,29 +31,29 @@ model Planet {
   regenPerSecond Float
   event          PlanetEvent?
   statistics     PlanetStatistics @relation(fields: [statisticsId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  statisticsId   Int @unique
+  statisticsId   Int              @unique
   attacking      BigInt[]
 
   @@index([index])
-} 
+}
 
 model Biome {
-  id          Int       @default(autoincrement()) @id
+  id          Int      @id @default(autoincrement())
   name        String
   description String
   planets     Planet[]
 }
 
 model Hazard {
-  id          Int       @default(autoincrement()) @id
+  id          Int    @id @default(autoincrement())
   name        String
   description String
   planetId    Int
-  planet      Planet    @relation(fields: [planetId], references: [id], onUpdate: Cascade, onDelete: Cascade) 
+  planet      Planet @relation(fields: [planetId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }
 
 model PlanetEvent {
-  id                Int           @default(autoincrement()) @id
+  id                Int      @id @default(autoincrement())
   eventType         BigInt
   faction           String
   health            BigInt
@@ -63,12 +62,12 @@ model PlanetEvent {
   endTime           DateTime
   campaignId        BigInt
   jointOperationIds BigInt[]
-  planetIndex       BigInt       @unique
-  planet            Planet      @relation(fields: [planetIndex], references: [index], onDelete: Cascade)
+  planetIndex       BigInt   @unique
+  planet            Planet   @relation(fields: [planetIndex], references: [index], onDelete: Cascade)
 }
 
 model PlanetStatistics {
-  id                 Int       @default(autoincrement()) @id
+  id                 Int     @id @default(autoincrement())
   missionsWon        BigInt
   missionsLost       BigInt
   missionTime        BigInt
@@ -88,40 +87,39 @@ model PlanetStatistics {
 }
 
 model CurrentWarStatus {
-  id                Int       @default(autoincrement()) @id
-  started           DateTime
-  ended             DateTime
-  now               DateTime
-  clientVersion     String
-  factions          String[]
-  impactMultiplier  Float
-  statistics        CurrentWarStatistics @relation(fields: [statisticsId], references: [id])
-  statisticsId      Int @unique
+  id               Int                  @id @default(autoincrement())
+  started          DateTime
+  ended            DateTime
+  now              DateTime
+  clientVersion    String
+  factions         String[]
+  impactMultiplier Float
+  statistics       CurrentWarStatistics @relation(fields: [statisticsId], references: [id])
+  statisticsId     Int                  @unique
 }
 
-
 model CurrentWarStatistics {
-  id                  Int      @default(autoincrement()) @id
-  missionsWon         BigInt
-  missionsLost        BigInt
-  missionTime         BigInt
-  terminidKills       BigInt
-  automatonKills      BigInt
-  illuminateKills     BigInt
-  bulletsFired        BigInt
-  bulletsHit          BigInt
-  timePlayed          BigInt
-  deaths              BigInt
-  revives             BigInt
-  friendlies          BigInt
-  missionSuccessRate  BigInt
-  accuracy            BigInt
-  playerCount         BigInt
-  currentWar          CurrentWarStatus?
+  id                 Int               @id @default(autoincrement())
+  missionsWon        BigInt
+  missionsLost       BigInt
+  missionTime        BigInt
+  terminidKills      BigInt
+  automatonKills     BigInt
+  illuminateKills    BigInt
+  bulletsFired       BigInt
+  bulletsHit         BigInt
+  timePlayed         BigInt
+  deaths             BigInt
+  revives            BigInt
+  friendlies         BigInt
+  missionSuccessRate BigInt
+  accuracy           BigInt
+  playerCount        BigInt
+  currentWar         CurrentWarStatus?
 }
 
 model News {
-  id                Int       @default(autoincrement()) @id
-  published         DateTime
-  message           String
+  id        Int      @id @default(autoincrement())
+  published DateTime
+  message   String
 }
