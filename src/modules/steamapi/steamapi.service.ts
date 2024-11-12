@@ -92,6 +92,9 @@ export class SteamAPIService {
         },
       });
       uniqueGames.push(added);
+      if (uniqueGames.length > 4) {
+        break;
+      }
     }
     return uniqueGames;
   }
