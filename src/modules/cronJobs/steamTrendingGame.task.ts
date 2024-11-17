@@ -26,7 +26,7 @@ export class SteamTrendingGameTask {
     const maxTokens = 250;
     for (const gameData of trendingGames) {
       const hints = [
-        `You need to delive the following information:\n ###Trending Game Data\n${JSON.stringify(gameData)}`,
+        `You need to deliver the following information:\n ###Trending Game Data\n${JSON.stringify(gameData)}`,
         'Make sure to use ** symbol around the word with high emphasys to make them bold',
         'Make sure to use at least 3 and maximum 5 unique emojis in your response',
         'Never use any links in your response',
