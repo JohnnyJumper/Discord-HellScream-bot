@@ -32,6 +32,9 @@ export class PlanetsAPIService {
             this.logger.error(
               `Response body: ${JSON.stringify(error.response?.data, null, 2)}`,
             );
+            this.logger.error(
+              `Response: ${JSON.stringify(error.response, null, 2)}`,
+            );
             this.logger.error(error.message);
             throw new Error('Failed to fetch planet information');
           }),
